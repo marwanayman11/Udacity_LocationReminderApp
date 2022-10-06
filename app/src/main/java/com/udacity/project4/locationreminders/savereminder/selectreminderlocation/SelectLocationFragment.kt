@@ -72,7 +72,6 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
         mapFragment.getMapAsync(this)
         fusedLocationProviderClient =
             LocationServices.getFusedLocationProviderClient(requireActivity())
-
         locationCallback = object : LocationCallback() {
             override fun onLocationResult(locationResult: LocationResult) {
                 if (locationResult.lastLocation != null) {
@@ -80,6 +79,7 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
                 }
             }
         }
+
 
         binding.saveButton.setOnClickListener {
             onLocationSelected()
@@ -142,12 +142,12 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
 
     override fun onResume() {
         super.onResume()
-        startLocationUpdates()
+       startLocationUpdates()
     }
 
     override fun onPause() {
         super.onPause()
-        stopLocationUpdates()
+      stopLocationUpdates()
     }
 
     override fun onDestroy() {
@@ -256,13 +256,13 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
                 snackbar!!.show()
             }
         }
+
     }
 
     @SuppressLint("MissingPermission")
     private fun showMyLocation() {
         fusedLocationProviderClient.lastLocation.addOnSuccessListener {
             if (it != null) {
-                map.isMyLocationEnabled = true
                 map.animateCamera(
                     CameraUpdateFactory.newLatLngZoom(
                         LatLng(
@@ -272,7 +272,6 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
                     )
                 )
             }
-
         }
     }
 
@@ -290,14 +289,18 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
 
     }
 
+    @SuppressLint("MissingPermission")
     private fun checkPermissions() {
         if (foregroundLocationPermissionApproved()) {
-            checkDeviceLocationSettings()
+            map.isMyLocationEnabled = true
+            map.uiSettings.isMyLocationButtonEnabled =true
+           checkDeviceLocationSettings()
         } else {
             requestForegroundLocationPermissions()
         }
     }
 
+    @SuppressLint("MissingPermission")
     @Deprecated("Deprecated in Java")
     override fun onRequestPermissionsResult(
         requestCode: Int,
@@ -309,6 +312,8 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
         if (requestCode == REQUEST_FOREGROUND_ONLY_PERMISSIONS_REQUEST_CODE)
          {
             if(grantResults.size == 1 && grantResults[0]== PackageManager.PERMISSION_GRANTED){
+                map.isMyLocationEnabled = true
+                map.uiSettings.isMyLocationButtonEnabled =true
                 checkDeviceLocationSettings()
             }
 
